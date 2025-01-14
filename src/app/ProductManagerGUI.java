@@ -5,6 +5,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Klasa ProductManagerGUI implementuje GUI do zarządzania produktami.
+ * Pozwala na dodawanie, edytowanie, usuwanie oraz filtrowanie i sortowanie produktów.
+ */
 public class ProductManagerGUI implements ProductObserver {
     private JFrame frame;
     private JTable table;
@@ -17,6 +21,9 @@ public class ProductManagerGUI implements ProductObserver {
     private boolean sortByName = false;
     private boolean sortByPrice = false;
 
+    /**
+     * Konstruktor inicjalizujący GUI oraz listę produktów początkowych.
+     */
     public ProductManagerGUI() {
         dataSubject = new DataSubject();
         dataSubject.addObserver(this);
@@ -33,6 +40,9 @@ public class ProductManagerGUI implements ProductObserver {
         dataSubject.setMasterProducts(new java.util.ArrayList<>(initialProducts));
     }
 
+    /**
+     * Tworzy i wyświetla graficzny interfejs użytkownika.
+     */
     public void createAndShowGUI() {
         frame = new JFrame("Product Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,13 +53,13 @@ public class ProductManagerGUI implements ProductObserver {
         tableModel = new DefaultTableModel(new Object[]{"Nazwa", "Cena"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Użytkownik nie może edytować tabeli
+                return false;
             }
         };
         table = new JTable(tableModel);
         table.setFont(new Font("Arial", Font.PLAIN, 14));
         table.setRowHeight(25);
-        table.setAutoCreateRowSorter(true); // Umożliwia sortowanie poprzez kliknięcie nagłówka kolumny
+        table.setAutoCreateRowSorter(true);
         JScrollPane scrollPane = new JScrollPane(table);
 
         gbc.gridx = 0;
@@ -63,7 +73,7 @@ public class ProductManagerGUI implements ProductObserver {
 
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         GridBagConstraints bpGbc = new GridBagConstraints();
-        bpGbc.insets = new Insets(5, 5, 5, 5); // Odstępy między przyciskami
+        bpGbc.insets = new Insets(5, 5, 5, 5);
 
         JButton filterButton = new JButton("Filtruj po cenie");
         JButton sortNameButton = new JButton("Sortuj po nazwie");
@@ -122,6 +132,9 @@ public class ProductManagerGUI implements ProductObserver {
         applyFiltersAndSortings();
     }
 
+    /**
+     * Aktualizuje zawartość tabeli na podstawie przekazanej listy produktów.
+     */
     @Override
     public void update(List<Product> products) {
         SwingUtilities.invokeLater(() -> {
@@ -132,6 +145,9 @@ public class ProductManagerGUI implements ProductObserver {
         });
     }
 
+    /**
+     * Wyświetla okno dialogowe do ustawiania filtrów cenowych.
+     */
     private void showFilterDialog() {
         JTextField minField = new JTextField();
         JTextField maxField = new JTextField();
@@ -171,18 +187,27 @@ public class ProductManagerGUI implements ProductObserver {
         }
     }
 
+    /**
+     * Sortuje listę produktów według nazw.
+     */
     private void sortByName() {
         sortByName = true;
         sortByPrice = false;
         applyFiltersAndSortings();
     }
 
+    /**
+     * Sortuje listę produktów według cen.
+     */
     private void sortByPrice() {
         sortByPrice = true;
         sortByName = false;
         applyFiltersAndSortings();
     }
 
+    /**
+     * Resetuje wszystkie filtry i sortowania do stanu domyślnego.
+     */
     private void resetFiltersAndSortings() {
         minPrice = Double.MIN_VALUE;
         maxPrice = Double.MAX_VALUE;
@@ -192,6 +217,9 @@ public class ProductManagerGUI implements ProductObserver {
         applyFiltersAndSortings();
     }
 
+    /**
+     * Wyświetla okno dialogowe do dodawania nowego produktu.
+     */
     private void showAddProductDialog() {
         JTextField nameField = new JTextField();
         JTextField priceField = new JTextField();
@@ -231,6 +259,9 @@ public class ProductManagerGUI implements ProductObserver {
         }
     }
 
+    /**
+     * Wyświetla okno dialogowe do usuwania wybranego produktu.
+     */
     private void showRemoveProductDialog() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
@@ -258,6 +289,9 @@ public class ProductManagerGUI implements ProductObserver {
         }
     }
 
+    /**
+     * Wyświetla okno dialogowe do edycji wybranego produktu.
+     */
     private void showEditProductDialog() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
@@ -320,6 +354,9 @@ public class ProductManagerGUI implements ProductObserver {
         }
     }
 
+    /**
+     * Zastosowuje aktualne filtry i sortowania do listy produktów.
+     */
     private void applyFiltersAndSortings() {
         DataProcessor newProcessor = products -> products;
 
@@ -340,6 +377,9 @@ public class ProductManagerGUI implements ProductObserver {
         dataSubject.notifyObserversWith(processed);
     }
 
+    /**
+     * Metoda główna uruchamiająca aplikację.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ProductManagerGUI gui = new ProductManagerGUI();
