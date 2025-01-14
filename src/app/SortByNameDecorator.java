@@ -22,7 +22,7 @@ public class SortByNameDecorator extends DataProcessorDecorator {
     @Override
     public List<Product> process(List<Product> products) {
         List<Product> sorted = products.stream()
-                .sorted(Comparator.comparing(Product::getName))
+                .sorted(Comparator.comparing(Product::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         return wrappee.process(sorted);
     }
